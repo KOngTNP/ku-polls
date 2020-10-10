@@ -93,3 +93,45 @@ class QuestionDetailViewTests(TestCase):
         url = reverse('polls:detail', args=(past_question.id,))
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+
+class QuestionModelTests(TestCase):
+    """Test question condition in model class."""
+
+    def test_is_published_future_question(self):
+        """is_published() return False if current date is before question's publication date."""
+        time = timezone.now() + datetime.timedelta(days=20)
+        future_q = Question(pub_date=time)
+        self.assertIs(future_q.is_published(), False)
+    
+    def test_is_published_now_question(self):
+        """is_published() return Ture if current date is on question's publication date."""
+        time = timezone.now()
+        present_q = Question(pub_date=time)
+        self.assertIs(present_q.is_published(), True)
+
+    def test_is_published_old_question(self):
+        """is_published() return Ture if current date is after question's publication date."""
+        time = timezone.now() - datetime.timedelta(days=1)
+        old_q = Question(pub_date=time)
+        self.assertIs(old_q.is_published(), True)
+
+    def test_vote_now_equal_to_pubdate(self):
+        """can_vote() return True if you're voting currently is on pub_date."""
+        pub_date = timezone.now()
+        end_date = timezone.now() + datetime.timedelta(days=1)
+        now = Question(pub_date=pub_date, end_date=end_date)
+        self.assertIs(now.can_vote(), True)
+
+    def test_vote_now_is_before_pubdate(self):
+        """can_vote() return False if you're voting currently is before pub_date."""
+        pub_date = timezone.now() - datetime.timedelta(days=1)
+        end_date = timezone.now()
+        before = Question(pub_date=pub_date, end_date=end_date)
+        self.assertIs(before.can_vote(), False)
+
+    def test_vote_now_is_after_enddate(self):
+        """can_vote() return False if you're voting currently is after end_date."""
+        pub_date = timezone.now()
+        end_date = timezone.now() - datetime.timedelta(days=1)
+        before = Question(pub_date=pub_date, end_date=end_date)
+        self.assertIs(before.can_vote(), False)
