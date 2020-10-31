@@ -1,0 +1,21 @@
+{% extends 'polls/base.html' %}
+{% load static %}
+<body>
+    {% block content %}
+  <div class="login">
+    <form method="post" action="{% url 'polls:loginpage' %}" class="container">
+      <h1>Login</h1>
+      {% csrf_token %}
+      <label for="User"><b>Username</b></label>
+      <input type="text" name="username" placeholder="Enter Username" name="username" required>
+      <label for="psw"><b>Password</b></label>
+      <input type="password" name="password" placeholder="Enter Password" name="psw" required>
+      <div class= "log-btn">
+        <button>Login</button>
+      </div>
+    </form>
+  </div>
+  {% endblock content%}
+</body>
+</head>
+
