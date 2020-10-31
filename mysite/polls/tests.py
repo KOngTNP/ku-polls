@@ -1,10 +1,10 @@
 import datetime
 from django.urls import reverse
-from django.test import TestCase
+from django.test import TestCase , Client
 from django.utils import timezone
 
 from .models import Question
-
+from django.contrib.auth.models import User
 
 def create_question(question_text, days):
     """
@@ -135,3 +135,14 @@ class QuestionModelTests(TestCase):
         end_date = timezone.now() - datetime.timedelta(days=1)
         before = Question(pub_date=pub_date, end_date=end_date)
         self.assertIs(before.can_vote(), False)
+
+
+
+class AuthTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.username = "kongza"
+        self.userpass = "12345678"
+        self.user = User.objects.create_user(self.username,password=self.userpass)
+
+    

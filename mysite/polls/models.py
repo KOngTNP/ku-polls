@@ -4,6 +4,7 @@ from datetime import date, timedelta
 from django import forms
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class Question(models.Model):
@@ -11,7 +12,6 @@ class Question(models.Model):
     pub_date = models.DateTimeField('date published' ,default=timezone.now)
     end_date = models.DateTimeField('ending date', default=timezone.now() + datetime.timedelta(days=10))
     
-
     def __str__(self):
         return self.question_text
         
@@ -35,3 +35,11 @@ class Choice(models.Model):
     votes = models.IntegerField(default=0)
     def __str__(self):
         return self.choice_text
+
+class Vote(models.Model):
+    """Create a model to track user vote."""
+
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, blank=True, 
+                  on_delete=models.CASCADE, default=0)
