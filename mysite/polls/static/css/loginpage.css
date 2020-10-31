@@ -1,0 +1,48 @@
+body, html {
+  overflow: hidden;
+  height: 100%;
+}
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+  .login{
+    width: 300px;
+    height: 100%;
+    background-color: white;
+  }
+
+    input[type=text], input[type=password] {
+      width: 100%;
+      font-size: 18;
+      padding: 15px;
+      margin: 5px 0 22px 0;
+      border: none;
+      background: #f1f1f1;
+    }
+
+    input[type=text]:focus, input[type=password]:focus {
+      background-color: #ddd;
+      outline: none;
+    }
+    
+
+    .log-btn button{
+      background-color: #4CAF50;
+      color: white;
+      height: 50px;
+      padding: auto;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      opacity: 0.9;
+      border-radius: 8px;
+  }
+
+    .log-btn button:hover {
+      opacity: 1;
+    }
+
+    
