@@ -1,13 +1,17 @@
 from django.utils import timezone
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render , redirect
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
-
-
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from .models import Choice, Question
+from django.views.generic import TemplateView
+
+
+
 
 
 class IndexView(generic.ListView):
@@ -34,6 +38,7 @@ class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
 
+@login_required
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
@@ -59,3 +64,29 @@ def valid_vote(request, pk):
         messages.error(request, f'You are not allowed to vote in the "{question.question_text}" poll!')
         return redirect('polls:index')
     return render(request, 'polls/detail.html', {'question': question})
+
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                if request.user.is_superuser:
+                    return redirect("admin:index")
+                else:
+                   return redirect("polls:index")
+            else:
+                return HttpResponse("Your account was inactive.")
+        else:
+            print("Failed to login.")
+            return HttpResponse("Invalid login details given")
+    else:
+        return render(request, "polls/loginpage.html", {})
+
+
+def user_logout(request):
+    logout(request)
+    return render(request, "polls/loginpage.html")
